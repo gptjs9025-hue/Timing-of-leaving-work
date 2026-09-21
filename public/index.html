@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1f7048">
+<meta name="description" content="상사가 눈치채기 전에 칼퇴하라! SPACE 하나로 즐기는 1~3분 퇴근 타이밍 기록 경쟁 게임.">
+<meta property="og:title" content="퇴근 타이밍">
+<meta property="og:description" content="상사가 눈치채기 전에 칼퇴하라! DAY 20까지 도전해 보세요.">
+<title>퇴근 타이밍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#e9eeea;
+  --panel:#ffffff;
+  --panel-2:#f3f6f4;
+  --ink:#16302a;
+  --ink-2:#4f6159;
+  --ink-3:#7d8b84;
+  --line:#d5ddd8;
+  --green:#1f7048;
+  --green-dark:#175a3a;
+  --green-soft:#e2f3ea;
+  --track:#e3e6e5;
+  --z-good:#c9f1d9;
+  --z-great:#96e3b4;
+  --z-perfect:#37bf68;
+  --red:#cf3346;
+  --red-soft:#fde6e9;
+  --navy:#3d4c6c;
+  --gold:#d4a017;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.55;
+  padding-inline:16px;
+  padding-block:20px 32px;
+  -webkit-tap-highlight-color:transparent;
+}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #2b7fff;outline-offset:2px}
+.win{
+  max-width:720px;margin:0 auto;background:var(--panel);
+  border:1px solid var(--line);border-radius:10px;overflow:hidden;
+  box-shadow:0 10px 30px -18px rgba(22,48,42,.45);
+}
+.titlebar{
+  background:var(--green);color:#fff;display:flex;align-items:center;gap:12px;
+  padding:10px 16px;font-weight:500;font-size:14px;letter-spacing:.01em;
+}
+.titlebar .sys{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.titlebar .wc{opacity:.75;letter-spacing:.35em;font-size:13px}
+.site{max-width:960px;margin:0 auto 16px;display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
+.brand{border:0;background:transparent;padding:6px 0;cursor:pointer;font-weight:900;font-size:19px;letter-spacing:-.01em;color:var(--green-dark)}
+.brand small{display:block;font-size:11px;font-weight:500;color:var(--ink-3);letter-spacing:.02em;line-height:1.2}
+nav{display:flex;gap:2px}
+nav button{
+  border:0;background:transparent;padding:8px 13px;font-weight:500;color:var(--ink-2);cursor:pointer;
+  border-radius:6px;
+}
+nav button:hover{color:var(--ink);background:rgba(31,112,72,.08)}
+nav button[aria-current="page"]{color:#fff;background:var(--green);font-weight:700}
+
+/* landing */
+.land{max-width:960px;margin:0 auto}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center;padding:14px 0 30px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--green);margin:0 0 10px}
+.hero h1{font-size:clamp(40px,10vw,68px)}
+.hero .tag{font-size:clamp(17px,4.2vw,21px);margin-top:10px;color:var(--ink)}
+.hero p.lead{color:var(--ink-2);max-width:46ch;margin:14px 0 20px}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px}
+.cta{border:0;border-radius:8px;background:var(--green);color:#fff;font-weight:700;font-size:17px;padding:14px 26px;cursor:pointer}
+.cta:hover{background:var(--green-dark)}
+.cta.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+.cta.ghost:hover{background:var(--panel-2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;padding:0;list-style:none}
+.chips li{font-size:13px;font-weight:500;color:var(--ink-2);background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:4px 12px}
+.hero-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 10px 30px -18px rgba(22,48,42,.45)}
+.hero-card .titlebar{font-size:13px}
+.hero-card .body{padding:14px 18px 20px}
+.hero-card .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.hero-card .row b{font-size:26px;font-weight:900}
+.hero-card .row span{font-variant-numeric:tabular-nums;font-weight:900;font-size:22px}
+.sect{padding:26px 0;border-top:1px solid var(--line)}
+.sect h2{font-size:clamp(22px,5vw,28px);letter-spacing:-.01em;margin-bottom:6px}
+.sect .sub{color:var(--ink-2);margin:0 0 18px;max-width:60ch}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;counter-increment:s}
+.steps li::before{content:counter(s);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-weight:700;font-size:13px;margin-bottom:8px}
+.steps li b{display:block;font-size:16px;margin-bottom:2px}
+.steps li span{color:var(--ink-2);font-size:14px}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);margin:22px 0 4px;border-radius:8px;overflow:hidden}
+.scale div{padding:12px 4px;text-align:center;font-weight:700;font-size:13px;line-height:1.3}
+.scale div span{display:block;font-weight:500;font-size:12px}
+.scale .a{background:var(--z-good);color:#185c38}
+.scale .b{background:var(--z-great);color:#0f4c2b}
+.scale .c{background:var(--z-perfect);color:#fff}
+.scale-note{font-size:13px;color:var(--ink-2);margin:6px 0 0}
+.two{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;align-items:start}
+.facts{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.facts li{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.facts b{font-size:22px;font-weight:900;color:var(--green);font-variant-numeric:tabular-nums}
+.facts span{display:block;font-size:13px;color:var(--ink-2)}
+.top3{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.top3 h3{margin:0 0 8px;font-size:15px}
+.top3 ol{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-variant-numeric:tabular-nums}
+.top3 li{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.top3 li span:first-child{font-weight:700}
+.top3 p{margin:0;font-size:14px;color:var(--ink-2)}
+.band{background:var(--green);color:#fff;border-radius:12px;padding:26px 22px;text-align:center;margin-top:10px}
+.band h2{color:#fff;margin-bottom:4px}
+.band p{margin:0 0 16px;opacity:.9}
+.band .cta{background:#fff;color:var(--green-dark)}
+.band .cta:hover{background:var(--green-soft)}
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .two{grid-template-columns:1fr}
+}
+.screen{padding:22px 22px 26px}
+h1{margin:0;font-size:clamp(28px,7vw,40px);font-weight:900;letter-spacing:-.02em;line-height:1.15}
+h2{margin:0 0 6px;font-size:20px;font-weight:700}
+.tag{margin:6px 0 0;color:var(--ink-2);font-size:16px}
+.rule{height:2px;background:var(--line);border:0;margin:16px 0}
+.muted{color:var(--ink-2)}
+.small{font-size:13px}
+.btn-main{
+  display:block;width:100%;border:0;border-radius:8px;background:var(--green);color:#fff;
+  font-weight:700;font-size:20px;padding:18px 16px;cursor:pointer;letter-spacing:.02em;
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;
+}
+.btn-main:hover{background:var(--green-dark)}
+.btn-main:active{background:#124a30;transform:translateY(1px)}
+.btn-sub{
+  border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:7px 12px;cursor:pointer;
+  font-weight:500;color:var(--ink);
+}
+.btn-sub:hover{background:var(--panel-2)}
+kbd{
+  font-family:var(--sans);font-weight:700;font-size:.85em;background:var(--panel-2);border:1px solid var(--line);
+  border-bottom-width:2px;border-radius:4px;padding:1px 7px;
+}
+
+/* gauge */
+.gauge-wrap{padding:6px 0 0}
+.track{position:relative;height:46px;background:var(--track);border-radius:6px;overflow:visible;margin:22px 0 10px}
+.zone{position:absolute;top:0;bottom:0;background:var(--z-good);border-radius:3px}
+.zone .great{position:absolute;top:0;bottom:0;left:20%;width:60%;background:var(--z-great)}
+.zone .perfect{position:absolute;top:0;bottom:0;left:40%;width:20%;background:var(--z-perfect)}
+.cursor{position:absolute;top:-8px;bottom:-8px;width:4px;margin-left:-2px;background:var(--red);border-radius:2px;left:0}
+.cursor::before{
+  content:"";position:absolute;top:-6px;left:-5px;border:7px solid transparent;border-top:8px solid var(--red);border-bottom:0;
+}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;font-size:13px;font-weight:500;color:var(--ink-2)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+.demo .cursor{animation:sweep 1.7s linear infinite alternate}
+@keyframes sweep{from{left:8%}to{left:92%}}
+
+/* home */
+.howto{background:var(--panel-2);border-radius:8px;padding:12px 18px;margin:16px 0}
+.howto ul{margin:0;padding-left:18px}
+.nick-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 14px}
+.nick-row label{font-weight:700;font-size:14px}
+.nick-row input{
+  flex:1 1 160px;min-width:0;border:1px solid var(--line);border-radius:6px;padding:9px 12px;background:#fff;
+}
+.foot{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:space-between;align-items:center;margin-top:14px;color:var(--ink-2);font-size:14px}
+.foot .grp{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* play */
+.hud{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:8px}
+.hud .day{white-space:nowrap;font-size:clamp(20px,6vw,32px);font-weight:900;letter-spacing:-.01em;line-height:1}
+.hud .score{justify-self:end;font-size:clamp(20px,5.5vw,26px);font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;line-height:1}
+.hud .clock{text-align:center}
+.hud .clock b{display:block;font-size:clamp(26px,8vw,38px);font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1.1}
+.hud .clock span{font-size:12px;color:var(--ink-2)}
+.evt{margin:12px 0 0;min-height:24px;font-size:14px;color:var(--navy);font-weight:500}
+.evt b{font-weight:700}
+.stage{position:relative}
+.status{display:flex;justify-content:space-between;gap:10px;margin:2px 0 14px;font-size:13px;font-weight:500}
+.status .left{color:var(--red);font-variant-numeric:tabular-nums}
+.status .right{color:var(--ink-2)}
+.streak{font-size:13px;color:var(--ink-2);text-align:center;min-height:20px;margin-bottom:8px}
+.fb{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.72);border-radius:8px;
+}
+.fb[hidden]{display:none!important}
+.fb .card{
+  min-width:min(280px,90%);text-align:center;border:2px solid;border-radius:10px;padding:16px 22px;
+  animation:pop .18s ease-out;
+}
+.fb .card .g{font-size:clamp(30px,9vw,44px);font-weight:900;line-height:1.1;letter-spacing:.01em}
+.fb .card .p{font-size:20px;font-weight:700;margin-top:2px}
+.fb .card .m{font-size:14px;margin-top:2px}
+.fb .card .b{font-size:13px;font-weight:700;margin-top:6px}
+.fb .perfect{background:#dcf5e5;border-color:#39c06a;color:#146a3b}
+.fb .great{background:#e3eefc;border-color:#5b95e0;color:#1f4f96}
+.fb .good{background:#fdf3d6;border-color:#dfb943;color:#7a5a00}
+.fb .failed{background:var(--red-soft);border-color:var(--red);color:#a1202f}
+@keyframes pop{from{transform:scale(.94);opacity:.4}to{transform:none;opacity:1}}
+
+/* result */
+.res-title{margin:0;text-align:center;font-size:clamp(34px,10vw,52px);font-weight:900;line-height:1.1;letter-spacing:-.02em}
+.res-title.over{color:var(--red)}
+.res-title.clear{color:var(--green)}
+.res-sub{text-align:center;color:var(--ink-2);margin:6px 0 0}
+.star{text-align:center;font-size:48px;color:var(--gold);line-height:1;margin-bottom:6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:var(--panel-2);border-radius:8px;padding:14px;margin:18px 0}
+.stats div{text-align:center;min-width:0}
+.stats span{display:block;font-size:12px;color:var(--ink-2)}
+.stats b{font-size:clamp(18px,5vw,24px);font-weight:900;font-variant-numeric:tabular-nums}
+.stats .sc{color:var(--green)}
+.judge-line{text-align:center;font-size:13px;color:var(--ink-2);margin:-6px 0 12px}
+.newrec{display:inline-block;background:var(--gold);color:#fff;font-weight:900;font-size:13px;letter-spacing:.06em;padding:2px 10px;border-radius:99px;margin-bottom:8px}
+.center{text-align:center}
+.reg{border:1px dashed var(--line);border-radius:8px;padding:10px 14px;margin:0 0 14px;font-size:14px}
+.reg .nick-row{margin:8px 0 0}
+.reg .st{color:var(--ink-2)}
+
+/* ranking */
+.tabs{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:8px 0 12px}
+.tabs button{border:0;background:var(--panel);padding:8px 18px;cursor:pointer;font-weight:500;color:var(--ink-2)}
+.tabs button[aria-pressed="true"]{background:var(--green);color:#fff;font-weight:700}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:360px}
+th{background:var(--green-soft);text-align:left;font-size:13px;padding:9px 12px;color:var(--green-dark)}
+td{padding:9px 12px;border-top:1px solid var(--line)}
+tr.me td{background:#fff8dc;font-weight:700}
+td.r,th.r{text-align:right}
+.rank-note{font-size:13px;color:var(--ink-2);margin:10px 0 0}
+
+/* guide */
+.gtbl{width:100%;border-collapse:collapse;margin:8px 0 18px;min-width:0;font-size:14px}
+.gtbl th{background:var(--green);color:#fff}
+.gtbl td,.gtbl th{border:1px solid var(--line);padding:7px 10px}
+.gtbl tr:nth-child(even) td{background:var(--panel-2)}
+.gscroll{overflow-x:auto}
+.foot-note{max-width:720px;margin:12px auto 0;text-align:center;color:var(--ink-3);font-size:12px}
+
+@media (max-width:420px){
+  .screen{padding:18px 14px 22px}
+  nav button{padding:9px 10px}
+}
+@media (prefers-reduced-motion:reduce){
+  .demo .cursor{animation:none;left:60%}
+  .fb .card{animation:none}
+}
+</style>
+
+</head>
+<body>
+<header class="site">
+  <button type="button" class="brand" data-go="landing">퇴근 타이밍<small>업무능률 향상 센터</small></button>
+  <nav aria-label="메뉴">
+    <button type="button" data-go="landing" aria-current="page">메인</button>
+    <button type="button" data-go="home">게임</button>
+    <button type="button" data-go="rank">랭킹</button>
+    <button type="button" data-go="guide">안내</button>
+  </nav>
+</header>
+
+<!-- 메인: 게임 소개 -->
+<main class="land" id="scr-landing">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">업무능률 향상 센터 · 근태 관리 시스템</p>
+      <h1>퇴근 타이밍</h1>
+      <p class="tag">상사가 눈치채기 전에 칼퇴하라!</p>
+      <p class="lead">스페이스바 하나로 빨간 게이지를 초록 구간에 멈추는 1~3분짜리 기록 경쟁 게임. 점심 먹고 잠깐, 회의 시작 전 잠깐 — 설치도 가입도 없이 바로 즐기세요.</p>
+      <div class="cta-row">
+        <button type="button" class="cta" data-go="home">게임 시작</button>
+        <button type="button" class="cta ghost" data-go="rank">랭킹 보기</button>
+      </div>
+      <ul class="chips"><li>SPACE 하나로 조작</li><li>약 1~3분</li><li>DAY 01 → 20</li><li>가입·설치 없음</li></ul>
+    </div>
+    <div class="hero-card" aria-hidden="true">
+      <div class="titlebar"><span class="sys">근태 관리 시스템</span><span class="wc">– □ ×</span></div>
+      <div class="body demo">
+        <div class="row"><b>DAY 07</b><span>17:59:58</span></div>
+        <div class="track"><div class="zone" style="left:56%;width:21%"><div class="great"></div><div class="perfect"></div></div><div class="cursor"></div></div>
+        <div class="legend"><span><i style="background:var(--z-perfect)"></i>PERFECT +300</span><span><i style="background:var(--z-great)"></i>GREAT +200</span><span><i style="background:var(--z-good)"></i>GOOD +100</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sect">
+    <h2>플레이 방법</h2>
+    <p class="sub">규칙은 하나. 빨간 선이 초록색 안에 있을 때 누르세요.</p>
+    <ol class="steps">
+      <li><b>게이지가 왕복합니다</b><span>빨간 세로선이 좌우로 계속 움직여요. DAY가 오를수록 빨라집니다.</span></li>
+      <li><b>SPACE로 멈춥니다</b><span>키보드는 SPACE, 터치 화면은 큰 버튼을 탭하세요. 단계당 딱 한 번입니다.</span></li>
+      <li><b>초록이면 퇴근, 아니면 야근</b><span>구간 안이면 다음 DAY로, 한 번이라도 벗어나면 즉시 게임오버.</span></li>
+    </ol>
+    <div class="scale" aria-label="성공 구간 판정 폭">
+      <div class="a">GOOD<span>+100</span></div><div class="b">GREAT<span>+200</span></div><div class="c">PERFECT<span>+300</span></div><div class="b">GREAT<span>+200</span></div><div class="a">GOOD<span>+100</span></div>
+    </div>
+    <p class="scale-note">성공 구간을 5등분한 모습입니다. 정중앙에 가까울수록 높은 점수를 받아요.</p>
+  </section>
+
+  <section class="sect">
+    <h2>20일의 근무일지</h2>
+    <p class="sub">근무일이 지날수록 사건이 터지고, 게이지는 빨라지며 성공 구간은 좁아집니다.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>DAY</th><th>사건</th><th class="r">게이지 속도</th><th class="r">성공 구간</th><th class="r">제한 시간</th></tr></thead>
+      <tbody id="diaryBody"></tbody>
+    </table></div>
+  </section>
+
+  <section class="sect">
+    <h2>점수와 랭킹</h2>
+    <p class="sub">같은 날짜에는 모든 참가자가 똑같은 패턴으로 겨룹니다. 순위는 도달 DAY → 점수 → PERFECT 횟수 순.</p>
+    <div class="two">
+      <ul class="facts">
+        <li><b>7,800 P</b><span>20번 모두 PERFECT일 때의 최대 점수 (기본 6,000 + 보너스 1,800)</span></li>
+        <li><b>연속 PERFECT 3 · 5 · 10회</b><span>처음 도달할 때마다 +300 · +500 · +1,000 보너스</span></li>
+      </ul>
+      <div class="top3" id="top3Box">
+        <h3>오늘의 퇴근왕 TOP 3</h3>
+        <div id="top3Body"><p>불러오는 중…</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <h2>오늘, 몇 일차까지 퇴근할 수 있을까요?</h2>
+    <p>한 번의 실수도 허용되지 않습니다.</p>
+    <button type="button" class="cta" data-go="home">게임 시작</button>
+  </section>
+</main>
+
+<div class="win" id="gameWin" hidden>
+  <div class="titlebar"><span class="sys">업무능률 향상 센터 / 근태 관리 시스템</span><span class="wc" aria-hidden="true">– □ ×</span></div>
+
+  <!-- 시작 화면 -->
+  <section class="screen" id="scr-home">
+    <h1>퇴근 타이밍</h1>
+    <p class="tag">상사가 눈치채기 전에 칼퇴하라!</p>
+    <div class="gauge-wrap demo" aria-hidden="true">
+      <div class="track"><div class="zone" style="left:58%;width:20%"><div class="great"></div><div class="perfect"></div></div><div class="cursor"></div></div>
+    </div>
+    <div class="howto">
+      <ul>
+        <li><kbd>SPACE</kbd>를 눌러 퇴근하세요. (터치 화면은 버튼을 탭)</li>
+        <li>초록색 구간에서 누르면 성공! 가운데일수록 고득점</li>
+        <li>단 한 번의 실수로 게임 종료 · DAY 20까지 도전</li>
+      </ul>
+    </div>
+    <div class="nick-row">
+      <label for="nick">닉네임 (랭킹 등록용)</label>
+      <input id="nick" type="text" maxlength="10" autocomplete="off" placeholder="2~10자, 예: 칼퇴전문가">
+    </div>
+    <div id="nickErr" class="small" style="color:var(--red);min-height:18px;margin:-8px 0 8px"></div>
+    <button type="button" class="btn-main" id="startBtn">SPACE&nbsp;&nbsp;게임 시작</button>
+    <div class="foot">
+      <span id="bestLine">나의 최고 기록: 없음</span>
+      <span class="grp">
+        <button type="button" class="btn-sub" id="soundBtn" aria-pressed="false">사운드: OFF</button>
+        <button type="button" class="btn-sub" data-go="rank">랭킹 보기</button>
+      </span>
+    </div>
+    <p class="small muted" id="patternLine" style="margin:12px 0 0"></p>
+  </section>
+
+  <!-- 플레이 화면 -->
+  <section class="screen" id="scr-play" hidden>
+    <div class="hud">
+      <div class="day" id="hudDay">DAY 01</div>
+      <div class="clock"><b id="hudClock">17:59:52</b><span>퇴근 가능 시간을 확인하세요</span></div>
+      <div class="score" id="hudScore">0 P</div>
+    </div>
+    <p class="evt" id="evt"></p>
+    <div class="stage">
+      <div class="gauge-wrap">
+        <div class="track" id="track"><div class="zone" id="zone"><div class="great"></div><div class="perfect"></div></div><div class="cursor" id="cursor"></div></div>
+        <div class="legend"><span><i style="background:var(--z-perfect)"></i>PERFECT +300</span><span><i style="background:var(--z-great)"></i>GREAT +200</span><span><i style="background:var(--z-good)"></i>GOOD +100</span></div>
+      </div>
+      <div class="fb" id="fb" hidden></div>
+    </div>
+    <div class="streak" id="streakLine" style="margin-top:12px"></div>
+    <button type="button" class="btn-main" id="gameBtn">SPACE&nbsp;&nbsp;퇴근하기</button>
+    <div class="status" style="margin-top:12px"><span class="left" id="remain">남은 시간 08.00초</span><span class="right" id="stateTxt">상태: 준비 중</span></div>
+  </section>
+
+  <!-- 결과 화면 -->
+  <section class="screen" id="scr-over" hidden>
+    <div class="star" id="resStar" hidden aria-hidden="true">★</div>
+    <div class="center"><span class="newrec" id="newRec" hidden>NEW RECORD</span></div>
+    <h2 class="res-title over" id="resTitle">야근 확정!</h2>
+    <p class="res-sub" id="resSub">퇴근 타이밍을 놓쳤습니다.</p>
+    <div class="stats">
+      <div><span>최종 도달 DAY</span><b id="rDay">DAY 0</b></div>
+      <div><span>최종 점수</span><b class="sc" id="rScore">0 P</b></div>
+      <div><span>PERFECT</span><b id="rPerf">0 회</b></div>
+    </div>
+    <p class="judge-line" id="rJudge"></p>
+    <div class="reg" id="regBox">
+      <div class="st" id="regStatus"></div>
+      <div class="nick-row" id="regRow" hidden>
+        <input id="nick2" type="text" maxlength="10" autocomplete="off" placeholder="닉네임 2~10자" aria-label="닉네임">
+        <button type="button" class="btn-sub" id="regBtn">랭킹 등록</button>
+      </div>
+    </div>
+    <button type="button" class="btn-main" id="retryBtn">SPACE&nbsp;&nbsp;다시 도전하기</button>
+    <div class="foot"><span></span><span class="grp"><button type="button" class="btn-sub" data-go="rank">랭킹 보기</button><button type="button" class="btn-sub" data-go="home">메인으로</button></span></div>
+  </section>
+
+  <!-- 랭킹 -->
+  <section class="screen" id="scr-rank" hidden>
+    <h2>퇴근왕 랭킹</h2>
+    <div class="tabs" role="group" aria-label="랭킹 종류">
+      <button type="button" id="tabDaily" aria-pressed="true">일간</button>
+      <button type="button" id="tabAll" aria-pressed="false">역대</button>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>순위</th><th>닉네임</th><th>도달 단계</th><th class="r">점수</th><th class="r">PERFECT</th></tr></thead>
+      <tbody id="rankBody"></tbody>
+    </table></div>
+    <p class="rank-note" id="rankNote"></p>
+    <p class="rank-note">순위: 도달 DAY → 점수 → PERFECT 횟수 → 등록 시각 · 일간 랭킹은 한국시간 00:00에 새로 시작합니다.</p>
+    <div style="margin-top:14px"><button type="button" class="btn-sub" id="rankRefresh">새로고침</button></div>
+  </section>
+
+  <!-- 안내 -->
+  <section class="screen" id="scr-guide" hidden>
+    <h2>게임 안내</h2>
+    <p class="muted" style="margin:0 0 14px">빨간 게이지가 초록색 구간에 들어왔을 때 <kbd>SPACE</kbd>를 눌러 퇴근하세요. 한 번이라도 놓치면 야근이 확정됩니다.</p>
+    <div class="gscroll"><table class="gtbl">
+      <tr><th>판정</th><th>위치</th><th>점수</th></tr>
+      <tr><td>PERFECT</td><td>성공 구간 중앙 20%</td><td>+300</td></tr>
+      <tr><td>GREAT</td><td>중앙 60% (PERFECT 제외)</td><td>+200</td></tr>
+      <tr><td>GOOD</td><td>구간의 바깥쪽 나머지 40%</td><td>+100</td></tr>
+      <tr><td>FAILED</td><td>구간 밖 또는 제한 시간 초과</td><td>즉시 게임오버</td></tr>
+    </table></div>
+    <div class="gscroll"><table class="gtbl">
+      <tr><th>연속 PERFECT 도달</th><th>보너스 (각 1회 지급)</th></tr>
+      <tr><td>3회</td><td>+300</td></tr>
+      <tr><td>5회</td><td>+500</td></tr>
+      <tr><td>10회</td><td>+1,000</td></tr>
+    </table></div>
+    <ul class="muted" style="padding-left:18px;margin:0">
+      <li>DAY 01부터 DAY 20까지, DAY가 오를수록 게이지가 빨라지고 성공 구간이 좁아집니다.</li>
+      <li>20회 모두 PERFECT면 최대 7,800점 (기본 6,000 + 보너스 1,800).</li>
+      <li>랭킹 도전 중 탭 이탈·창 전환이 감지되면 그 판은 랭킹에 등록되지 않습니다.</li>
+      <li>같은 날짜에는 모든 이용자가 동일한 성공 구간 패턴으로 겨룹니다.</li>
+      <li>사운드는 기본 OFF입니다. 소리 없이도 모든 판정을 확인할 수 있습니다.</li>
+    </ul>
+  </section>
+</div>
+<p class="foot-note">퇴근 타이밍 v1.0 · 업무능률 향상 센터</p>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- 상수 (기획서 5장, 6장) ---------- */
+var DAYS = 20;
+var SPEED = [60,65,70,75,80,85,90,95,100,105,110,113,117,121,125,130,135,140,145,150]; // %/초
+var PREP_MS = 500, FB_MS = 700, FAIL_MS = 900, LOCK_MS = 700;
+var BONUS = {3:300, 5:500, 10:1000};
+var PTS = {P:300, G:200, O:100};
+var EVENTS = {
+  1:["첫 출근","오늘도 힘내세요!"], 3:["적응 완료","이제 퇴근이 익숙하시죠?"], 5:["상사 등장","부장님이 다가오고 있습니다."],
+  7:["업무 증가","업무가 조금씩 늘어나고 있습니다."], 10:["야근 위기","지금 퇴근하지 않으면 위험합니다."],
+  13:["회의 요청","퇴근 직전 회의가 잡혔습니다."], 15:["인사 평가","당신의 퇴근 능력을 평가합니다."],
+  18:["극한의 칼퇴","더 빠르게 퇴근하세요!"], 20:["최종 퇴근","당신의 퇴근 능력을 증명하세요."]
+};
+var BAD = ["시발","씨발","병신","지랄","fuck","shit","bitch","개새","좆"];
+
+function widthFor(d){ return d<=3?.25 : d<=6?.23 : d<=10?.21 : d<=15?.19 : d<=19?.17 : .16; }
+function limitFor(d){ return d<=6?8 : d<=15?7 : 6; }
+function pad2(n){ return (n<10?"0":"")+n; }
+function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,","); }
+
+/* ---------- 저장소 (실패해도 동작) ---------- */
+var mem = {};
+var store = {
+  get:function(k){ try{ var v=localStorage.getItem(k); return v===null?(mem[k]===undefined?null:mem[k]):v; }catch(e){ return mem[k]===undefined?null:mem[k]; } },
+  set:function(k,v){ mem[k]=v; try{ localStorage.setItem(k,v); }catch(e){} }
+};
+function readJSON(k){ try{ return JSON.parse(store.get(k)); }catch(e){ return null; } }
+var cid = store.get("ct_cid");
+if(!cid){
+  var a = new Uint8Array(10);
+  try{ crypto.getRandomValues(a); }catch(e){ for(var i=0;i<a.length;i++) a[i]=Math.floor(Math.random()*256); }
+  cid = "u"; a.forEach(function(b){ cid += b.toString(16).padStart(2,"0"); });
+  store.set("ct_cid", cid);
+}
+
+/* ---------- DOM ---------- */
+var $ = function(id){ return document.getElementById(id); };
+var screens = {landing:$("scr-landing"),home:$("scr-home"),play:$("scr-play"),over:$("scr-over"),rank:$("scr-rank"),guide:$("scr-guide")};
+var cur = "landing";
+
+/* ---------- 사운드 (기본 OFF) ---------- */
+var soundOn = store.get("ct_sound")==="1";
+var actx = null;
+function ensureAudio(){
+  if(!soundOn) return null;
+  try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==="suspended") actx.resume(); }catch(e){ actx=null; }
+  return actx;
+}
+function tone(f, t0, dur, type, vol){
+  var c = ensureAudio(); if(!c) return;
+  var o=c.createOscillator(), g=c.createGain(), t=c.currentTime+t0;
+  o.type=type||"sine"; o.frequency.value=f;
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||.07,t+.01); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+.02);
+}
+var SFX = {
+  start:function(){ tone(660,0,.09,"sine"); },
+  P:function(){ tone(784,0,.09,"triangle"); tone(1175,.09,.18,"triangle"); },
+  G:function(){ tone(660,0,.14,"triangle"); },
+  O:function(){ tone(520,0,.1,"square",.04); },
+  X:function(){ tone(180,0,.32,"sawtooth",.06); },
+  rec:function(){ [523,659,784,1047].forEach(function(f,i){ tone(f,i*.09,.16,"triangle"); }); },
+  clear:function(){ [523,659,784,1047,1319].forEach(function(f,i){ tone(f,i*.11,.22,"triangle"); }); }
+};
+function renderSound(){ var b=$("soundBtn"); b.textContent="사운드: "+(soundOn?"ON":"OFF"); b.setAttribute("aria-pressed",soundOn?"true":"false"); }
+$("soundBtn").addEventListener("click", function(){ soundOn=!soundOn; store.set("ct_sound",soundOn?"1":"0"); renderSound(); if(soundOn) SFX.start(); });
+renderSound();
+
+/* ---------- 날짜 시드 패턴 ---------- */
+function kstDate(){ return new Date(Date.now()+9*3600*1000).toISOString().slice(0,10); }
+function hashStr(s){ var h=2166136261; for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+function mulberry(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; var t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function makePattern(dateKey){
+  var rng = mulberry(hashStr("toe-geun:"+dateKey)), out=[null], m=0.04;
+  for(var d=1; d<=DAYS; d++){ var w=widthFor(d); out.push(m + w/2 + rng()*(1-w-2*m)); }
+  return out;
+}
+
+/* ---------- 점수 (검증에도 사용) ---------- */
+function calcScore(grades){
+  var s=0, streak=0, got={};
+  for(var i=0;i<grades.length;i++){
+    var g=grades[i]; s+=PTS[g]||0;
+    if(g==="P"){ streak++; if(BONUS[streak] && !got[streak]){ got[streak]=1; s+=BONUS[streak]; } } else streak=0;
+  }
+  return s;
+}
+function isBetter(a,b){
+  if(a.day!==b.day) return a.day>b.day;
+  if(a.score!==b.score) return a.score>b.score;
+  return a.perfect>b.perfect;
+}
+
+/* ---------- 화면 전환 ---------- */
+function show(name){
+  cur = name;
+  Object.keys(screens).forEach(function(k){ screens[k].hidden = (k!==name); });
+  $("gameWin").hidden = (name==="landing");
+  var navKey = name==="over"?"home":name==="play"?"home":name;
+  document.querySelectorAll("nav button").forEach(function(b){ if(b.dataset.go===navKey) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  if(name==="home") renderHome();
+  if(name==="rank") loadRank();
+  if(name==="landing") loadTop3();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("[data-go]").forEach(function(b){
+  b.addEventListener("click", function(){ abortGame(); show(b.dataset.go); });
+});
+
+/* ---------- 닉네임 ---------- */
+function getNick(){ return (store.get("ct_nick")||"").trim(); }
+function validNick(n){
+  n=(n||"").trim();
+  if(n.length<2||n.length>10) return "닉네임은 2~10자로 입력해 주세요.";
+  if(!/^[0-9A-Za-z가-힣ㄱ-ㅎㅏ-ㅣ _\-]+$/.test(n)) return "한글·영문·숫자·공백·_ - 만 사용할 수 있어요.";
+  var low=n.toLowerCase().replace(/\s+/g,"");
+  for(var i=0;i<BAD.length;i++) if(low.indexOf(BAD[i])>-1) return "사용할 수 없는 표현이 포함되어 있어요.";
+  return "";
+}
+$("nick").value = getNick();
+$("nick").addEventListener("input", function(){
+  var v=$("nick").value, e=v.trim()?validNick(v):"";
+  $("nickErr").textContent=e; if(!e) store.set("ct_nick",v.trim());
+});
+
+/* ---------- 홈 ---------- */
+function bestText(){
+  var b=readJSON("ct_best");
+  return b&&b.day>0 ? "나의 최고 기록: DAY "+pad2(b.day)+" · "+fmt(b.score)+" P" : "나의 최고 기록: 아직 없음";
+}
+function renderHome(){
+  $("bestLine").textContent = bestText();
+  $("patternLine").textContent = "오늘의 근무 패턴 "+kstDate()+" · 같은 날 모든 이용자가 같은 구간에서 겨룹니다.";
+}
+
+/* ---------- 게임 ---------- */
+var G = null, raf = 0, lockUntil = 0;
+var el = {
+  day:$("hudDay"), clock:$("hudClock"), score:$("hudScore"), evt:$("evt"), zone:$("zone"), cursor:$("cursor"),
+  fb:$("fb"), remain:$("remain"), state:$("stateTxt"), streak:$("streakLine")
+};
+
+var starting=false;
+function apiStart(){
+  return apiFetch("start",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cid:cid})},2500).catch(function(){ return null; });
+}
+function startGame(){
+  if(starting) return;
+  var n=$("nick").value.trim();
+  if(n){ var e=validNick(n); if(e){ $("nickErr").textContent=e; $("nick").focus(); return; } store.set("ct_nick",n); }
+  ensureAudio(); SFX.start();
+  starting=true;
+  apiStart().then(function(info){ starting=false; launch(info); });
+}
+function launch(info){
+  var dk = info ? info.date : kstDate();
+  G = { id:(G?G.id:0)+1, dateKey:dk, token:info?info.token:null, presses:[], centers:makePattern(dk), day:0, score:0, streak:0, got:{}, grades:"", cnt:{P:0,G:0,O:0}, valid:true, state:"prep", reached:0 };
+  show("play");
+  beginDay(1);
+  if(!raf) raf=requestAnimationFrame(frame);
+}
+function abortGame(){ if(G && G.state!=="over"){ G.state="over"; G.id++; } }
+
+function beginDay(d){
+  G.day=d; G.state="prep"; G.prepEnd=performance.now()+PREP_MS;
+  G.speed=SPEED[d-1]; G.width=widthFor(d); G.center=G.centers[d]; G.limit=limitFor(d);
+  el.day.textContent="DAY "+pad2(d);
+  el.score.textContent=fmt(G.score)+" P";
+  var ev=EVENTS[d];
+  el.evt.innerHTML=""; if(ev){ var b=document.createElement("b"); b.textContent=ev[0]; el.evt.appendChild(b); el.evt.appendChild(document.createTextNode(" / "+ev[1])); }
+  el.zone.style.left=((G.center-G.width/2)*100)+"%"; el.zone.style.width=(G.width*100)+"%";
+  el.cursor.style.left="0%";
+  el.fb.hidden=true;
+  setClock(G.limit); el.remain.textContent="남은 시간 "+G.limit.toFixed(2).padStart(5,"0")+"초";
+  el.state.textContent="상태: 준비 중";
+  el.streak.textContent = G.streak>0 ? "연속 PERFECT "+G.streak+"회" : "";
+}
+function setClock(rem){
+  var s=Math.max(0,Math.ceil(rem-1e-9));
+  el.clock.textContent = s===0 ? "18:00:00" : "17:59:"+pad2(60-s);
+}
+function tri(x){ var m=x%2; return m<=1?m:2-m; }
+
+function frame(now){
+  raf=requestAnimationFrame(frame);
+  if(!G || cur!=="play") return;
+  if(G.state==="prep"){
+    if(now>=G.prepEnd){ G.state="run"; G.t0=now; el.state.textContent="상태: 퇴근 처리 대기 중"; }
+    return;
+  }
+  if(G.state==="run"){
+    var sec=(now-G.t0)/1000, rem=G.limit-sec;
+    if(rem<=0){ el.cursor.style.left=(G.pos*100)+"%"; finishFail("timeout", now); return; }
+    G.pos=tri(sec*G.speed/100);
+    el.cursor.style.left=(G.pos*100)+"%";
+    el.remain.textContent="남은 시간 "+rem.toFixed(2).padStart(5,"0")+"초";
+    setClock(rem);
+  }
+}
+document.addEventListener("visibilitychange", function(){ if(document.hidden) invalidate(); });
+window.addEventListener("blur", invalidate);
+function invalidate(){ if(G && cur==="play" && (G.state==="prep"||G.state==="run")) G.valid=false; }
+
+function press(){
+  if(!G || cur!=="play" || G.state!=="run") return;
+  var now=performance.now(), sec=(now-G.t0)/1000;
+  if(sec>=G.limit){ finishFail("timeout", now); return; }
+  var pos=tri(sec*G.speed/100); G.pos=pos;
+  el.cursor.style.left=(pos*100)+"%";
+  var off=Math.abs(pos-G.center)/G.width, g;
+  if(off<=0.10+1e-9) g="P"; else if(off<=0.30+1e-9) g="G"; else if(off<=0.50+1e-9) g="O"; else g=null;
+  if(!g){ finishFail("miss", now); return; }
+  G.presses.push(sec);
+  succeed(g);
+}
+
+var MSG = {P:["PERFECT!","완벽한 칼퇴입니다!","perfect"], G:["GREAT!","무사히 정시 퇴근했습니다.","great"], O:["GOOD","아슬아슬하게 퇴근했습니다.","good"]};
+function succeed(g){
+  G.state="fb"; G.reached=G.day; G.grades+=g; G.cnt[g]++;
+  var gain=PTS[g], bonus=0;
+  if(g==="P"){ G.streak++; if(BONUS[G.streak] && !G.got[G.streak]){ G.got[G.streak]=1; bonus=BONUS[G.streak]; } } else G.streak=0;
+  G.score+=gain+bonus;
+  el.score.textContent=fmt(G.score)+" P";
+  el.state.textContent="상태: 퇴근 처리 완료";
+  el.streak.textContent = G.streak>0 ? "연속 PERFECT "+G.streak+"회" : "";
+  SFX[g](); if(bonus) setTimeout(SFX.rec, 200);
+  var m=MSG[g], last=(G.day===DAYS);
+  el.fb.innerHTML="";
+  var c=document.createElement("div"); c.className="card "+m[2];
+  var a=document.createElement("div"); a.className="g"; a.textContent=(g==="P"?"✓ ":"")+m[0];
+  var p=document.createElement("div"); p.className="p"; p.textContent="+"+gain+" P";
+  var t=document.createElement("div"); t.className="m"; t.textContent=m[1];
+  c.appendChild(a); c.appendChild(p); c.appendChild(t);
+  if(bonus){ var b=document.createElement("div"); b.className="b"; b.textContent="연속 PERFECT "+G.streak+"회 보너스 +"+fmt(bonus)+" P"; c.appendChild(b); }
+  el.fb.appendChild(c); el.fb.hidden=false;
+  var id=G.id;
+  setTimeout(function(){
+    if(!G||G.id!==id) return;
+    if(last) finish(true); else beginDay(G.day+1);
+  }, FB_MS);
+}
+
+function finishFail(reason){
+  if(G.state!=="run") return;
+  G.state="fb";
+  SFX.X();
+  el.state.textContent="상태: 퇴근 처리 실패";
+  setClock(0);
+  if(reason==="timeout") el.remain.textContent="남은 시간 00.00초";
+  el.fb.innerHTML="";
+  var c=document.createElement("div"); c.className="card failed";
+  var a=document.createElement("div"); a.className="g"; a.textContent="✕ FAILED";
+  var t=document.createElement("div"); t.className="m"; t.textContent="퇴근 처리에 실패했습니다.";
+  var t2=document.createElement("div"); t2.className="m"; t2.textContent=reason==="timeout"?"제한 시간이 지났습니다.":"성공 구간을 벗어났습니다.";
+  c.appendChild(a); c.appendChild(t); c.appendChild(t2); el.fb.appendChild(c); el.fb.hidden=false;
+  var id=G.id;
+  setTimeout(function(){ if(G&&G.id===id) finish(false); }, FAIL_MS);
+}
+
+/* ---------- 결과 ---------- */
+var lastResult=null;
+function finish(cleared){
+  G.state="over";
+  var res={ day:G.reached, score:G.score, perfect:G.cnt.P, great:G.cnt.G, good:G.cnt.O, grades:G.grades, date:G.dateKey, valid:G.valid, cleared:cleared, token:G.token, presses:G.presses.slice() };
+  lastResult=res;
+  var prev=readJSON("ct_best"), newRec=false;
+  if(res.day>0 && (!prev || isBetter(res, prev))){ newRec=true; store.set("ct_best", JSON.stringify({day:res.day,score:res.score,perfect:res.perfect})); }
+  lockUntil=performance.now()+LOCK_MS;
+  var t=$("resTitle");
+  $("resStar").hidden=!cleared;
+  if(cleared){ t.className="res-title clear"; t.textContent="칼퇴왕 달성!"; $("resSub").textContent="20일 연속 퇴근 성공"; SFX.clear(); }
+  else { t.className="res-title over"; t.textContent="야근 확정!"; $("resSub").textContent="퇴근 타이밍을 놓쳤습니다."; if(newRec) setTimeout(SFX.rec,120); }
+  $("newRec").hidden=!newRec;
+  $("rDay").textContent="DAY "+pad2(res.day);
+  $("rScore").textContent=fmt(res.score)+" P";
+  $("rPerf").textContent=res.perfect+" 회";
+  $("rJudge").textContent="PERFECT "+res.perfect+" · GREAT "+res.great+" · GOOD "+res.good+(newRec?"   새로운 퇴근 기록이 등록되었습니다!":"");
+  $("retryBtn").innerHTML = cleared ? "SPACE&nbsp;&nbsp;최고 기록에 다시 도전" : "SPACE&nbsp;&nbsp;다시 도전하기";
+  show("over");
+  handleRegistration(res);
+}
+function setReg(msg, showInput){ $("regStatus").textContent=msg; $("regRow").hidden=!showInput; }
+function handleRegistration(res){
+  if(res.day<1){ setReg("DAY 01도 통과하지 못해 랭킹에 등록되지 않습니다.", false); return; }
+  if(!res.valid){ setReg("탭 이탈·창 전환이 감지되어 이번 판은 랭킹에 등록되지 않습니다.", false); return; }
+  if(!res.token){ setReg("랭킹 서버에 연결되지 않아 이번 판은 랭킹에 등록되지 않습니다.", false); return; }
+  var n=getNick();
+  if(!n || validNick(n)){ $("nick2").value=n; setReg("닉네임을 입력하면 이번 기록을 랭킹에 등록합니다.", true); return; }
+  submitRun(res, n);
+}
+$("regBtn").addEventListener("click", regFromInput);
+$("nick2").addEventListener("keydown", function(e){ if(e.key==="Enter") regFromInput(); });
+function regFromInput(){
+  var v=$("nick2").value.trim(), e=validNick(v);
+  if(e){ $("regStatus").textContent=e; return; }
+  store.set("ct_nick",v); $("nick").value=v;
+  if(lastResult) submitRun(lastResult, v);
+}
+var API="/api/";
+function apiFetch(path, opts, ms){
+  opts=opts||{};
+  var ctrl=("AbortController" in window)?new AbortController():null;
+  var t=ctrl?setTimeout(function(){ctrl.abort();}, ms||8000):null;
+  if(ctrl) opts.signal=ctrl.signal;
+  return fetch(API+path, opts).then(function(r){
+    if(t) clearTimeout(t);
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if(!r.ok){ var err=new Error((j&&j.message)||(j&&j.error)||("HTTP "+r.status)); err.code=j&&j.error; throw err; }
+      return j;
+    });
+  }, function(e){ if(t) clearTimeout(t); throw e; });
+}
+var ERR = {
+  invalid_run:"기록 검증에 실패해 등록되지 않았습니다.",
+  too_fast:"기록 검증에 실패해 등록되지 않았습니다.",
+  invalid_token:"판 정보가 만료되어 등록되지 않았습니다. 다시 도전해 주세요.",
+  expired:"판 정보가 만료되어 등록되지 않았습니다. 다시 도전해 주세요."
+};
+function submitRun(res, nick){
+  setReg("랭킹에 등록하는 중…", false);
+  apiFetch("submit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token:res.token,cid:cid,nick:nick,presses:res.presses})},10000)
+  .then(function(j){
+    setReg("랭킹 등록 완료! (닉네임: "+nick+") · 오늘 "+j.daily.rank+"위 · 역대 "+j.all.rank+"위", false);
+  }).catch(function(e){
+    setReg(ERR[e.code]||e.message||"랭킹 등록에 실패했습니다. 잠시 후 다시 시도해 주세요.", false);
+  });
+}
+
+/* ---------- 랭킹 ---------- */
+var rankKind="daily";
+function setTab(k){
+  rankKind=k;
+  $("tabDaily").setAttribute("aria-pressed",k==="daily"?"true":"false");
+  $("tabAll").setAttribute("aria-pressed",k==="all"?"true":"false");
+  loadRank();
+}
+$("tabDaily").addEventListener("click", function(){ setTab("daily"); });
+$("tabAll").addEventListener("click", function(){ setTab("all"); });
+$("rankRefresh").addEventListener("click", loadRank);
+function rankMsg(txt){
+  var b=$("rankBody"); b.innerHTML="";
+  var tr=document.createElement("tr"), td=document.createElement("td"); td.colSpan=5; td.textContent=txt; td.style.color="var(--ink-2)"; tr.appendChild(td); b.appendChild(tr);
+}
+function loadRank(){
+  var kind=rankKind;
+  rankMsg("불러오는 중…"); $("rankNote").textContent="";
+  apiFetch("rank?scope="+kind+"&cid="+encodeURIComponent(cid)).then(function(j){
+    if(kind!==rankKind) return;
+    var body=$("rankBody"); body.innerHTML="";
+    if(!j.rows.length){ rankMsg(kind==="daily"?"오늘의 첫 기록을 남겨보세요!":"아직 등록된 기록이 없습니다."); return; }
+    j.rows.forEach(function(d){
+      var tr=document.createElement("tr"); if(d.me) tr.className="me";
+      [pad2(d.rank), d.nick, "DAY "+pad2(d.day), fmt(d.score)+" P", d.perfect+" 회"].forEach(function(v,i){
+        var td=document.createElement("td"); td.textContent=v; if(i>=3) td.className="r"; tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+    $("rankNote").textContent = j.me ? "내 순위: "+j.me.rank+"위 / "+j.total+"명" : "아직 등록된 내 기록이 없습니다.";
+  }).catch(function(){ rankMsg("랭킹을 불러오지 못했습니다. 잠시 후 새로고침해 주세요."); $("rankNote").textContent=bestText(); });
+}
+
+/* ---------- 메인(소개) ---------- */
+function renderDiary(){
+  var b=$("diaryBody"); b.innerHTML="";
+  Object.keys(EVENTS).map(Number).sort(function(x,y){return x-y;}).forEach(function(d){
+    var tr=document.createElement("tr");
+    [ "DAY "+pad2(d), EVENTS[d][0]+" — "+EVENTS[d][1], SPEED[d-1]+"%", Math.round(widthFor(d)*100)+"%", limitFor(d)+"초" ].forEach(function(v,j){
+      var td=document.createElement("td"); td.textContent=v; if(j>=2) td.className="r"; tr.appendChild(td);
+    });
+    b.appendChild(tr);
+  });
+}
+function loadTop3(){
+  var box=$("top3Body");
+  apiFetch("rank?scope=daily&limit=3").then(function(j){
+    box.innerHTML="";
+    if(!j.rows.length){ var p=document.createElement("p"); p.textContent="오늘의 첫 퇴근왕이 되어보세요!"; box.appendChild(p); return; }
+    var ol=document.createElement("ol");
+    j.rows.forEach(function(d){
+      var li=document.createElement("li"), a=document.createElement("span"), c=document.createElement("span");
+      a.textContent=d.rank+"위 "+d.nick; c.textContent="DAY "+pad2(d.day)+" · "+fmt(d.score)+" P";
+      li.appendChild(a); li.appendChild(c); ol.appendChild(li);
+    });
+    box.appendChild(ol);
+  }).catch(function(){ $("top3Box").hidden=true; });
+}
+renderDiary();
+
+/* ---------- 입력 ---------- */
+function onSpace(){
+  if(cur==="home") startGame();
+  else if(cur==="play") press();
+  else if(cur==="over" && performance.now()>=lockUntil) startGame();
+}
+function isField(t){ return t && (t.tagName==="INPUT"||t.tagName==="TEXTAREA"); }
+window.addEventListener("keydown", function(e){
+  if(e.code==="Enter" && e.target===$("nick")){ e.preventDefault(); startGame(); return; }
+  if(e.code!=="Space" || isField(e.target)) return;
+  e.preventDefault();          // 스크롤·버튼 클릭 방지
+  if(e.repeat) return;         // 키 자동 반복 입력 차단
+  onSpace();
+});
+window.addEventListener("keyup", function(e){ if(e.code==="Space" && !isField(e.target)) e.preventDefault(); });
+$("startBtn").addEventListener("click", startGame);
+$("retryBtn").addEventListener("click", function(){ if(performance.now()>=lockUntil) startGame(); });
+$("gameBtn").addEventListener("pointerdown", function(e){ e.preventDefault(); press(); });
+$("gameBtn").addEventListener("click", function(e){ if(e.detail===0) press(); }); // 키보드 Enter 접근성
+
+show("landing");
+try{ window.focus(); }catch(e){}
+})();
+</script>
+</body>
+</html>

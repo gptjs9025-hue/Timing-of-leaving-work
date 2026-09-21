@@ -1,0 +1,13 @@
+{
+  "name": "toegeun-timing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev",
+    "db:local": "wrangler d1 execute toegeun-ranking --local --file=schema.sql",
+    "db:remote": "wrangler d1 execute toegeun-ranking --remote --file=schema.sql",
+    "deploy": "wrangler pages deploy"
+  },
+  "devDependencies": { "wrangler": "^4" }
+}
